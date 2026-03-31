@@ -25,26 +25,47 @@ const resetGame = () => {
   msgContainer.classList.add("hide");
 };
 
+const boxClickEvent = (event) => {
+  const box = event.currentTarget;
+  if (turnO) {
+    //playerO
+    box.innerText = "O";
+    turnO = false;
+  } else {
+    //playerX
+    box.innerText = "X";
+    turnO = true;
+  }
+  box.classList.remove("transluscent-text");
+  box.disabled = true;
+  count++;
+
+  let isWinner = checkWinner();
+
+  if (count === 9 && !isWinner) {
+    gameDraw();
+  }
+};
+
+const boxMouseOverEvent = (event) => {
+  const box = event.currentTarget;
+  if(box.disabled) return;
+
+  box.classList.add("transluscent-text");
+  box.innerText = turnO ? "O" : "X";
+};
+
+const boxMouseOutEvent = (event) => {
+  const box = event.currentTarget;
+  if(box.disabled) return;
+  box.classList.remove("transluscent-text");
+  box.innerText = "";
+};
+
 boxes.forEach((box) => {
-  box.addEventListener("click", () => {
-    if (turnO) {
-      //playerO
-      box.innerText = "O";
-      turnO = false;
-    } else {
-      //playerX
-      box.innerText = "X";
-      turnO = true;
-    }
-    box.disabled = true;
-    count++;
-
-    let isWinner = checkWinner();
-
-    if (count === 9 && !isWinner) {
-      gameDraw();
-    }
-  });
+  box.addEventListener("click", boxClickEvent);
+  box.addEventListener("mouseover", boxMouseOverEvent);
+  box.addEventListener("mouseout", boxMouseOutEvent);
 });
 
 const gameDraw = () => {
@@ -67,7 +88,7 @@ const enableBoxes = () => {
 };
 
 const showWinner = (winner) => {
-  msg.innerText = `Congratulations, Winner is ${winner}`;
+  msg.innerText = `Congratulations!\nWinner is ${winner}`;
   msgContainer.classList.remove("hide");
   disableBoxes();
 };
